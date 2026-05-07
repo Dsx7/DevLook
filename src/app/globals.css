@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors */
   --color-mint: #b2f6e3;
   --color-grey-50: #f7f7f7;
   --color-grey-100: #efeeec;
@@ -14,14 +13,9 @@
   --color-grey-800: #121212;
   --color-grey-900: #111212;
 
-  /* Custom Font */
   --font-sans-primary: "saans", ui-sans-serif, system-ui, sans-serif;
-  
-  /* Custom Heights */
-  --height-screen-fix: 100vh;
 }
 
-/* Import your local fonts */
 @font-face {
   font-family: "saans";
   src: url("/fonts/SaansRegular.woff2") format("woff2");
@@ -38,22 +32,60 @@
   font-display: swap;
 }
 
-/* If you manage to download the Bold/SemiBold versions later, add them like this: */
 @font-face {
   font-family: "saans";
-  src: url("/fonts/SaansSemiBold.woff2") format("woff2");
-  font-weight: 600;
+  src: url("/fonts/SaansMedium.woff2") format("woff2");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Base Body Styles */
-body {
-  background-color: var(--color-grey-100);
-  scroll-behavior: smooth;
+html {
+  scroll-behavior: auto;
 }
 
-/* Hide scrollbar for the seamless look */
+body {
+  background: var(--color-grey-100);
+  color: var(--color-grey-900);
+  font-family: var(--font-sans-primary);
+  font-synthesis: weight style;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  outline: none;
+}
+
+img {
+  display: block;
+}
+
 ::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+@keyframes brand-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
