@@ -7,6 +7,7 @@ import LegacyCards from "@/components/LegacyCards";
 import NewsGrid from "@/components/NewsGrid";
 import ReadyText from "@/components/ReadyText";
 import Footer from "@/components/Footer";
+import SendUs from "@/components/SendUs";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         <Carousel />
         <FeaturedWork />
         <Services />
+        <SendUs />
         <LegacyCards />
         <NewsGrid />
         <ReadyText />

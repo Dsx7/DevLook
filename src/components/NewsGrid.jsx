@@ -12,7 +12,7 @@ const stories = [
   {
     title:
       "Rise at Seven Appointed by Coneys to Drive Demand and Retail Growth for them in the Chocolate Confectionery Category",
-    category: "Food/Hospitality/Drink",
+    category: "",
     author: "Ray Saddiq",
     time: "2 mins",
     image: "/Screenshot-2026-02-07-at-17.01.43.webp",
@@ -20,7 +20,7 @@ const stories = [
   },
   {
     title: "Rise at Seven Appointed by Langtins to drive demand and retail growth for Noomz",
-    category: "Food/Hospitality/Drink",
+    category: "",
     author: "Carrie Rose",
     time: "2 mins",
     image: "/Screenshot-2025-07-04-at-12.50.54.webp",
@@ -87,9 +87,8 @@ export default function NewsGrid() {
                     <img
                       src={story.image}
                       alt={story.title}
-                      className={`h-full w-full object-cover transition-transform duration-700 ${
-                        index === 0 ? "group-hover:scale-105 group-hover:blur-md" : "group-hover:scale-[1.04]"
-                      }`}
+                      className={`h-full w-full object-cover transition-transform duration-700 ${index === 0 ? "group-hover:scale-105 group-hover:blur-md" : "group-hover:scale-[1.04]"
+                        }`}
                     />
 
                     {index === 0 ? (

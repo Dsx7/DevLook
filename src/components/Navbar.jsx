@@ -10,7 +10,7 @@ const navItems = [
   { name: 'About', hasMenu: true },
   { name: 'Work', hasMenu: false, badge: '25' },
   { name: 'Careers', hasMenu: false },
-  { name: 'Blog', hasMenu: false },
+  { name: 'Blog & Resources', hasMenu: false },
   { name: 'Webinar', hasMenu: false }
 ];
 
@@ -99,12 +99,12 @@ const RiseLogo = ({ className }) => (
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // Track scroll position for hide/show logic
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
-  
+
   // States for Desktop Mega Menu
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeImage, setActiveImage] = useState(null);
@@ -119,11 +119,12 @@ export default function Navbar() {
 
       // 1. Check if scrolled past top (for blurring/backgrounds)
       setScrolled(currentScrollY > 50);
-
-      // 2. Exception Sections (e.g., Featured Work)
+      // 2. Exception Sections (e.g., Featured Work & Legacy Cards)
       const featuredWork = document.getElementById("featured-work");
+      const legacycard = document.getElementById("legacy-card");
       let forceHide = false;
 
+      // Check first section
       if (featuredWork) {
         const rect = featuredWork.getBoundingClientRect();
         if (rect.top <= 100 && rect.bottom >= 100) {
@@ -131,21 +132,33 @@ export default function Navbar() {
         }
       }
 
-      // 3. Hide/Show logic
-      if (forceHide) {
-        setHidden(true);
-        setActiveMenu(null);
-      } else {
-        if (currentScrollY > lastScrollY.current && currentScrollY > 150) {
-          // Scrolling Down
-          setHidden(true);
-          setActiveMenu(null);
-        } else if (currentScrollY < lastScrollY.current) {
-          // Scrolling Up
-          setHidden(false);
+      // Check second section
+      if (legacycard) {
+        const rect = legacycard.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          forceHide = true;
         }
       }
 
+      // 3. Hide/Show logic
+      const isScrollingUp = currentScrollY < lastScrollY.current;
+      
+      if (forceHide) {
+        if (isScrollingUp) {
+          setHidden(false);
+        } else {
+          setHidden(true);
+          setActiveMenu(null);
+        }
+      } else {
+        // Standard hide/show on scroll up/down
+        if (!isScrollingUp && currentScrollY > 150) {
+          setHidden(true);
+          setActiveMenu(null);
+        } else {
+          setHidden(false);
+        }
+      }
       lastScrollY.current = currentScrollY;
     };
 
@@ -200,181 +213,184 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Announcement Bar */}
-      <div className={`pt-2.5 px-2.5 w-full transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        <div className="flex justify-center z-[60] relative items-center text-xs w-full py-2 px-5 text-center font-semibold rounded-2xl text-grey-900 bg-mint">
-          🚨 The Category Leaderboard - Live Now
+      {/* Announcement Bar (Normal Document Flow) */}
+      <div className={`w-full z-[60] relative transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <div className="pt-2 lg:pt-2.5 px-2 lg:px-2.5 w-full flex justify-center">
+          <div className="flex justify-center items-center text-xs w-full max-w-[1920px] h-8 px-5 text-center font-semibold rounded-[10px] lg:rounded-2xl text-grey-900 bg-mint">
+            🚨 The Category Leaderboard - Live Now
+          </div>
         </div>
       </div>
 
       {/* BACKGROUND DIMMER FOR MEGA MENU */}
-      <div 
+      <div
         className={`fixed inset-0 w-screen h-screen z-30 transition-all duration-300 pointer-events-none
           ${activeMenu ? 'opacity-100 backdrop-blur-md bg-grey-900/20' : 'opacity-0 backdrop-blur-none'}`}
       />
 
-      {/* Outer Wrapper for exact centering and scroll translation */}
-      <div className={`fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none transition-transform duration-500 ease-in-out ${hidden ? '-translate-y-[150%]' : 'translate-y-0'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}>
-        
-        {/* Main Header Container */}
-        <header 
-          className={`w-full max-w-[1600px] pointer-events-auto transition-all duration-500 ease-in-out px-2 lg:px-8
-            ${scrolled ? 'pt-2 lg:pt-4' : 'pt-8 lg:pt-12'}`}
-          onMouseLeave={() => setActiveMenu(null)}
-        >
-          {/* Inner visible navbar bar */}
-          <div className={`w-full h-16 lg:h-[5.5rem] flex items-center justify-between relative z-50 transition-all duration-500 px-4 md:px-8 lg:px-10
-            ${scrolled ? 'bg-white/85 backdrop-blur-xl shadow-md rounded-[2rem] lg:rounded-full' : 'bg-transparent rounded-[2rem] lg:rounded-full'}`}>
-            
-            {/* 1. Left Section: Logo */}
-            <Link href="/" className="flex w-32 md:w-40 xl:w-44 z-50 relative shrink-0">
-               <div className="aspect-4/3 w-full">
-                  <RiseLogo className={`w-full h-full object-contain transition-colors duration-300 fill-current ${scrolled ? 'text-black' : 'text-white'}`} />
+      {/* Sticky Zero-Height Wrapper for native scrolling without taking up space */}
+      <div className="sticky top-0 left-0 w-full z-50 h-0 flex justify-center">
+
+        {/* Absolute positioning container for scroll translation */}
+        <div className={`absolute top-0 left-0 w-full flex justify-center pointer-events-none transition-transform duration-500 ease-in-out ${hidden ? '-translate-y-full' : 'translate-y-0'} ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}>
+
+          {/* Main Header Container */}
+          <header
+            className={`w-full max-w-[1920px] pointer-events-auto transition-all duration-500 ease-in-out
+              ${scrolled ? 'px-0 pt-0 lg:px-4 lg:pt-4' : 'px-0 pt-0 lg:px-4 lg:pt-4'}`}
+            onMouseLeave={() => setActiveMenu(null)}
+          >
+            {/* Inner visible navbar bar */}
+            <div className={`w-full transition-all duration-500 px-5 md:px-6 lg:px-8 flex items-center justify-between relative z-50
+            ${scrolled ? 'h-14 lg:h-[4rem] bg-white/80 backdrop-blur-lg shadow-sm lg:shadow-md rounded-none lg:rounded-full' : 'h-16 lg:h-[4.5rem] bg-transparent shadow-none rounded-none lg:rounded-full'}`}>
+
+              {/* 1. Left Section: Logo */}
+              <div className="flex w-auto lg:w-[180px] shrink-0 justify-start z-50 relative">
+                <Link href="/" className="flex items-center">
+                  <RiseLogo className={`h-4 md:h-[18px] xl:h-5 w-auto object-contain transition-colors duration-300 fill-current ${scrolled ? 'text-grey-900' : 'text-white'}`} />
+                </Link>
               </div>
-            </Link>
 
-            {/* 2. Center Section: Navigation Links */}
-            <div className="hidden lg:flex items-center gap-x-2 z-50 relative">
-              {navItems.map((item) => (
-                <div 
-                  key={item.name} 
-                  className="relative"
-                  onMouseEnter={() => handleMenuEnter(item.name)}
-                >
-                  <Link 
-                    href="#" 
-                    className={`relative flex items-center font-medium tracking-tight transition-all duration-300 px-4 py-1.5 rounded-full
-                      ${activeMenu === item.name 
-                        ? 'bg-white text-grey-900 shadow-sm' 
-                        : (scrolled ? 'text-grey-900 hover:bg-grey-100/50' : 'text-white hover:bg-white/20')
-                      }`}
+              {/* 2. Center Section: Navigation Links */}
+              <div className="hidden lg:flex items-center gap-x-0.5 xl:gap-x-1 z-50 relative">
+                {navItems.map((item) => (
+                  <div
+                    key={item.name}
+                    className="relative"
+                    onMouseEnter={() => handleMenuEnter(item.name)}
                   >
-                    {item.name} {item.hasMenu && '+'}
-                    
-                    {item.badge && (
-                      <div className="absolute top-0 right-0 -translate-y-1 translate-x-2 bg-mint text-grey-900 text-[10px] font-bold px-1.5 rounded-full">
-                        {item.badge}
-                      </div>
-                    )}
-                  </Link>
-                </div>
-              ))}
-            </div>
+                    <Link
+                      href="#"
+                      className={`relative flex items-center text-[14px] xl:text-[15px] font-semibold tracking-tight transition-all duration-300 px-3 xl:px-4 py-1.5 rounded-full
+                      ${activeMenu === item.name
+                          ? 'bg-white text-grey-900 shadow-sm'
+                          : (scrolled ? 'text-grey-900 hover:bg-grey-900/5' : 'text-white hover:bg-white/20')
+                        }`}
+                    >
+                      {item.name} {item.hasMenu && '+'}
 
-            {/* 3. Right Section: Get In Touch Button */}
-            <div className="hidden lg:flex items-center z-50 relative shrink-0">
-              <Link 
-                href="#" 
-                className={`inline-flex justify-center gap-x-2 items-center font-sans-primary font-medium px-6 py-3 rounded-3xl transition duration-300 hover:rounded-xl 
-                  ${scrolled ? 'bg-grey-900 text-white' : 'bg-white text-grey-900'}`}
-              >
-                <span>Get in touch</span>
-                <span className="text-xs mt-1">↗</span>
-              </Link>
-            </div>
-
-            {/* Mobile Hamburger Button */}
-            <div className="inline-flex lg:hidden z-50 relative">
-              <button 
-                className="inline-flex items-center justify-center w-12 h-8"
-                onClick={() => setMobileMenuOpen(true)}
-              >
-                <div className="flex w-5 h-2 flex-col items-start justify-between">
-                  <div className="w-full h-px relative -top-px transition-transform duration-500 transform rotate-0">
-                    <div className={`w-full h-0.5 ${scrolled ? 'bg-grey-900' : 'bg-white'}`}></div>
-                  </div>
-                  <div className="w-full h-px transition-transform duration-500 transform rotate-0">
-                    <div className={`w-full h-0.5 ${scrolled ? 'bg-grey-900' : 'bg-white'}`}></div>
-                  </div>
-                </div>
-              </button>
-            </div>
-
-{/* 4. THE DESKTOP MEGA MENU DROPDOWN 
-                FIXED: Increased px (padding left/right) and gaps to make the white box much wider.
-            */}
-            <div 
-              className={`absolute top-[80px] lg:top-[85px] left-1/2 -translate-x-1/2 w-max bg-white rounded-[2rem] py-6 px-10 lg:py-8 lg:px-16 shadow-2xl z-40 flex transition-all duration-300 transform origin-top
-                ${activeMenu ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
-            >
-              {activeMenu && megaMenus[activeMenu] && (
-                <>
-                  {/* MAIN INNER CONTAINER: Increased gap between the text block and the image block */}
-                  <div className="flex items-center gap-12 lg:gap-20">
-                    
-                    {/* The Two Text Columns: Increased gap between the columns themselves */}
-                    <div className="flex items-start gap-12 lg:gap-16 pl-2">
-                      {megaMenus[activeMenu].columns.map((col, idx) => (
-                        <div key={idx} className="flex flex-col justify-start">
-                          <div className="h-6 mb-2">
-                            <div className="text-grey-400 text-xs font-medium tracking-tight">
-                              {col.title}
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-col gap-y-1.5">
-                            {col.links.map((link, linkIdx) => (
-                              <div 
-                                key={linkIdx} 
-                                className="relative overflow-hidden group cursor-pointer h-7"
-                                onMouseEnter={() => setActiveImage(link.image)}
-                              >
-                                <Link href="#" className="block text-[1.15rem] leading-[1.6] font-medium tracking-tight text-grey-900 transition-transform duration-300 group-hover:-translate-y-full">
-                                  {link.label}
-                                </Link>
-                                <Link href="#" className="absolute top-0 left-0 w-full text-[1.15rem] leading-[1.6] font-medium tracking-tight text-grey-900 transition-transform duration-300 translate-y-full group-hover:translate-y-0">
-                                  {link.label}
-                                </Link>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Image Block */}
-                    <div className="w-[220px] h-[220px] lg:w-[260px] lg:h-[260px] rounded-2xl overflow-hidden relative shrink-0 bg-grey-100">
-                      {getActiveMenuImages().map((img) => (
-                        <img
-                          key={img}
-                          src={img}
-                          alt="Menu Feature"
-                          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${activeImage === img ? 'opacity-100' : 'opacity-0'}`}
-                        />
-                      ))}
-
-                      {megaMenus[activeMenu].action && (
-                        <div className="absolute bottom-4 left-4 z-20">
-                          <Link href="#" className="bg-grey-900 text-white px-4 py-2.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition hover:scale-105 shadow-md">
-                            {megaMenus[activeMenu].action} <span className="text-[10px]">↗</span>
-                          </Link>
+                      {item.badge && (
+                        <div className="absolute top-0 right-0 -translate-y-1 translate-x-2 bg-mint text-grey-900 text-[10px] font-bold px-1.5 rounded-full">
+                          {item.badge}
                         </div>
                       )}
-                    </div>
-
+                    </Link>
                   </div>
-                </>
-              )}
+                ))}
+              </div>
+
+              {/* 3. Right Section: Get In Touch Button */}
+              <div className="hidden lg:flex w-[180px] shrink-0 justify-end items-center z-50 relative">
+                <Link
+                  href="#"
+                  className={`inline-flex justify-center gap-x-1.5 items-center font-sans-primary font-semibold text-[14px] px-5 py-2.5 rounded-3xl transition duration-300 hover:rounded-xl ${scrolled ? 'bg-grey-900 text-white' : 'bg-white text-grey-900'}`}
+                >
+                  <span>Get in touch</span>
+                  <span className="text-[10px] mt-0.5">↗</span>
+                </Link>
+              </div>
+
+              {/* Mobile Hamburger Button */}
+              <div className="inline-flex lg:hidden z-50 relative">
+                <button
+                  className="inline-flex items-center justify-center w-12 h-8"
+                  onClick={() => setMobileMenuOpen(true)}
+                >
+                  <div className="flex w-5 h-2 flex-col items-start justify-between">
+                    <div className="w-full h-px relative -top-px transition-transform duration-500 transform rotate-0">
+                      <div className={`w-full h-0.5 ${scrolled ? 'bg-grey-900' : 'bg-white'}`}></div>
+                    </div>
+                    <div className="w-full h-px transition-transform duration-500 transform rotate-0">
+                      <div className={`w-full h-0.5 ${scrolled ? 'bg-grey-900' : 'bg-white'}`}></div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              {/* 4. THE DESKTOP MEGA MENU DROPDOWN */}
+              <div
+                className={`hidden lg:flex absolute top-[70px] lg:top-[75px] left-1/2 -translate-x-1/2 w-max bg-white rounded-[2rem] py-8 px-12 lg:py-8 lg:px-14 shadow-2xl z-40 transition-all duration-300 transform origin-top
+                ${activeMenu ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}
+              >
+                {activeMenu && megaMenus[activeMenu] && (
+                  <>
+                    {/* MAIN INNER CONTAINER */}
+                    <div className="flex items-center gap-20 lg:gap-32">
+
+                      {/* The Two Text Columns */}
+                      <div className="flex items-start gap-20 lg:gap-32 pl-2">
+                        {megaMenus[activeMenu].columns.map((col, idx) => (
+                          <div key={idx} className="flex flex-col justify-start">
+                            <div className="h-6 mb-2">
+                              <div className="text-grey-400 text-xs font-semibold tracking-tight uppercase">
+                                {col.title}
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-y-1.5">
+                              {col.links.map((link, linkIdx) => (
+                                <div
+                                  key={linkIdx}
+                                  className="relative overflow-hidden group cursor-pointer h-7"
+                                  onMouseEnter={() => setActiveImage(link.image)}
+                                >
+                                  <Link href="#" className="block text-[17px] leading-[1.6] font-medium tracking-tight text-grey-900 transition-transform duration-300 group-hover:-translate-y-full">
+                                    {link.label}
+                                  </Link>
+                                  <Link href="#" className="absolute top-0 left-0 w-full text-[17px] leading-[1.6] font-medium tracking-tight text-grey-900 transition-transform duration-300 translate-y-full group-hover:translate-y-0">
+                                    {link.label}
+                                  </Link>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Image Block */}
+                      <div className="w-[200px] h-[200px] lg:w-[240px] lg:h-[240px] rounded-2xl overflow-hidden relative shrink-0 bg-grey-100">
+                        {getActiveMenuImages().map((img) => (
+                          <img
+                            key={img}
+                            src={img}
+                            alt="Menu Feature"
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${activeImage === img ? 'opacity-100' : 'opacity-0'}`}
+                          />
+                        ))}
+
+                        {megaMenus[activeMenu].action && (
+                          <div className="absolute bottom-4 left-4 z-20">
+                            <Link href="#" className="bg-grey-900 text-white px-4 py-2.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition hover:scale-105 shadow-md">
+                              {megaMenus[activeMenu].action} <span className="text-[10px]">↗</span>
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  </>
+                )}
+              </div>
+
             </div>
+          </header>
+        </div>
 
-          </div>
-        </header>
-      </div>
-
-      {/* =========================================
+        {/* =========================================
           FULL SCREEN MOBILE MENU
       ========================================= */}
-      <div className={`w-full h-svh fixed top-0 left-0 z-[100] transition-all duration-500 p-2 lg:hidden
-        ${mobileMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-4'}`}
-      >
-        <div className="w-full h-full bg-grey-900/95 backdrop-blur-md rounded-3xl overflow-hidden flex flex-col justify-between px-5 pt-8 pb-5 shadow-2xl relative">
-            
+        <div className={`w-full h-[100dvh] fixed inset-0 z-[100] p-2 transition-opacity duration-300 ease-out lg:hidden
+        ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        >
+          {/* Using bg-black/85 and backdrop-blur-sm to prevent lag while keeping some transparency */}
+          <div className="w-full h-full bg-black/85 backdrop-blur-sm overflow-hidden flex flex-col justify-between px-5 pt-6 pb-6 relative rounded-3xl shadow-2xl border border-white/10" style={{ willChange: 'opacity, backdrop-filter' }}>
+
             <div className="w-full flex justify-between items-center mb-10 shrink-0">
-              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="w-32">
-                 <RiseLogo className="w-full h-full object-contain text-white fill-current" />
+              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="w-28">
+                <RiseLogo className="w-full h-full object-contain text-white fill-current" />
               </Link>
-              
-              <button 
+
+              <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-white p-2 z-50 cursor-pointer"
                 aria-label="Close Menu"
@@ -386,55 +402,56 @@ export default function Navbar() {
             </div>
 
             <nav className="flex flex-col w-full flex-1 overflow-y-auto overflow-x-hidden">
-                {navItems.map((item) => (
-                  <div key={item.name} className="flex flex-col w-full">
-                    
-                    <div className="flex items-center justify-between w-full py-1">
-                      <Link href="#" className="text-white text-3xl tracking-tight font-medium leading-none">
-                        {item.name}
-                      </Link>
-                      
-                      {item.hasMenu && (
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            toggleMobileDropdown(item.name);
-                          }}
-                          className="w-8 h-8 rounded-full border border-white/70 flex items-center justify-center text-white transition-transform duration-300 z-50 cursor-pointer"
-                          style={{ transform: activeMobileDropdown === item.name ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                        >
-                          <svg className="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"></path>
-                          </svg>
-                        </button>
+              {navItems.map((item) => (
+                <div key={item.name} className="flex flex-col w-full">
+
+                  <div className="flex items-center justify-between w-full py-1.5">
+                    <Link href="#" className="text-white text-[26px] sm:text-[28px] tracking-tight font-medium leading-none">
+                      {item.name}
+                    </Link>
+
+                    {item.hasMenu && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleMobileDropdown(item.name);
+                        }}
+                        className="w-10 h-10 rounded-full border border-white/50 flex items-center justify-center text-white transition-transform duration-300 z-50 cursor-pointer"
+                        style={{ transform: activeMobileDropdown === item.name ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                      >
+                        <svg className="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${activeMobileDropdown === item.name ? 'grid-rows-[1fr] opacity-100 pb-4 pt-3' : 'grid-rows-[0fr] opacity-0'}`}
+                  >
+                    <div className="overflow-hidden flex flex-col gap-y-3 pl-1">
+                      {item.hasMenu && megaMenus[item.name] && megaMenus[item.name].columns.map(col =>
+                        col.links.map(link => (
+                          <Link key={link.label} href="#" className="text-white/70 hover:text-white transition-colors text-[17px] font-medium tracking-tight">
+                            {link.label}
+                          </Link>
+                        ))
                       )}
                     </div>
-
-                    <div 
-                      className={`grid transition-all duration-300 ease-in-out ${activeMobileDropdown === item.name ? 'grid-rows-[1fr] opacity-100 pb-4 pt-3' : 'grid-rows-[0fr] opacity-0'}`}
-                    >
-                      <div className="overflow-hidden flex flex-col gap-y-3 pl-1">
-                        {item.hasMenu && megaMenus[item.name] && megaMenus[item.name].columns.map(col => 
-                          col.links.map(link => (
-                            <Link key={link.label} href="#" className="text-white/70 hover:text-white transition-colors text-xl font-medium tracking-tight">
-                              {link.label}
-                            </Link>
-                          ))
-                        )}
-                      </div>
-                    </div>
-
                   </div>
-                ))}
+
+                </div>
+              ))}
             </nav>
-            
-            <div className="w-full shrink-0 mt-6 pt-2">
-              <Link href="#" className="w-full flex justify-center gap-x-2 items-center font-sans-primary font-medium px-6 py-4 rounded-3xl bg-white text-grey-900 transition-transform active:scale-95">
+
+            <div className="w-full shrink-0 mt-4 pt-2">
+              <Link href="#" className="w-full flex justify-center gap-x-2 items-center font-sans-primary font-semibold text-[15px] px-6 py-3.5 rounded-3xl bg-white text-grey-900 transition-transform active:scale-95">
                 <span>Get In Touch</span>
-                <span className="text-xs mt-1">↗</span>
+                <span className="text-[11px] mt-0.5">↗</span>
               </Link>
             </div>
 
+          </div>
         </div>
       </div>
     </>

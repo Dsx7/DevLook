@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
@@ -37,6 +37,11 @@ const cards = [
 export default function LegacyCards() {
   const sectionRef = useRef(null);
   const desktopCardsRef = useRef([]);
+  const mobileScrollRef = useRef(null);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
+  // Triple the cards for infinite scroll illusion
+  const loopedCards = [...cards, ...cards, ...cards];
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -44,23 +49,51 @@ export default function LegacyCards() {
     const ctx = gsap.context(() => {
       ScrollTrigger.matchMedia({
         "(min-width: 1024px)": () => {
-          desktopCardsRef.current.forEach((card, index) => {
-            if (!card) {
-              return;
-            }
-
-            gsap.to(card, {
-              yPercent: -105,
-              rotate: -12 - index * 6,
-              ease: "none",
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top top",
-                end: "bottom bottom",
-                scrub: true,
-              },
-            });
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: 0.5,
+            },
           });
+
+          // Initial Rotations from start piled-up state:
+          // Top (Black): -2deg
+          // Middle (Mint): 4deg
+          // Bottom (White): 10deg
+
+          gsap.set(desktopCardsRef.current[0], { rotate: -2, xPercent: 0, yPercent: 0 });
+          gsap.set(desktopCardsRef.current[1], { rotate: 4, xPercent: 0, yPercent: 0 });
+          gsap.set(desktopCardsRef.current[2], { rotate: 10, xPercent: 0, yPercent: 0 });
+
+          // PEELING FORMATION REARRANGEMENT:
+          // The cards simultaneously rearrange to create the peeking layered effect
+          // by animating simultaneously with different x/y and larger rotations.
+
+          // Card 0 (Black/Pioneers): moves top-left, rotated significantly
+          tl.to(desktopCardsRef.current[0], {
+            xPercent: -40,
+            yPercent: -30,
+            rotate: -25,
+            ease: "power2.inOut",
+          }, 0);
+
+          // Card 1 (Mint/Award Winning): moves slightly middle, minor rotation
+          tl.to(desktopCardsRef.current[1], {
+            xPercent: 0,
+            yPercent: -10,
+            rotate: 15,
+            ease: "power2.inOut",
+          }, 0);
+
+          // Card 2 (White/Speed): moves bottom-right, rotated significantly
+          tl.to(desktopCardsRef.current[2], {
+            xPercent: 40,
+            yPercent: 30,
+            rotate: 35,
+            ease: "power2.inOut",
+          }, 0);
         },
       });
     }, sectionRef);
@@ -68,56 +101,111 @@ export default function LegacyCards() {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    // Initial scroll position for mobile infinite loop
+    if (mobileScrollRef.current) {
+      const container = mobileScrollRef.current;
+      // Wait for layout
+      setTimeout(() => {
+        const cardWidth = container.scrollWidth / 9;
+        container.scrollLeft = cardWidth * 3; // Start at the middle set (index 3)
+      }, 100);
+    }
+  }, []);
+
+  const handleMobileScroll = (e) => {
+    const container = e.target;
+    const scrollLeft = container.scrollLeft;
+    const cardWidth = container.scrollWidth / 9;
+
+    if (cardWidth <= 0) return;
+
+    let index = Math.round(scrollLeft / cardWidth);
+    setActiveCardIndex(index % 3);
+
+    // Infinite scroll reset logic (silent jump)
+    if (index <= 0) {
+      container.scrollLeft = cardWidth * 3;
+    } else if (index >= 8) {
+      container.scrollLeft = cardWidth * 5;
+    }
+  };
+
   return (
-    <section id="legacy" ref={sectionRef} className="px-4 pb-[4.5rem] sm:px-7 lg:pb-24">
-      <div className="mx-auto max-w-[1600px] lg:hidden">
-        <div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
-          {cards.map((card) => (
+    <section id="legacy-card" ref={sectionRef} className="px-4 pb-[4.5rem] sm:px-7 lg:pb-48 pt-10 lg:pt-0">
+
+      {/* Mobile-only Text Title */}
+      <div className="text-center text-xl font-medium tracking-tight text-grey-900 sm:text-2xl mb-8 lg:hidden">
+        Legacy In The Making
+      </div>
+
+      <div className="mx-auto w-full lg:hidden">
+        <div
+          ref={mobileScrollRef}
+          className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4"
+          onScroll={handleMobileScroll}
+        >
+          {loopedCards.map((card, i) => (
             <article
-              key={card.title}
-              className={`min-w-[82vw] snap-center rounded-[2rem] p-7 shadow-[0_20px_60px_rgba(17,18,18,0.08)] ${card.background} ${card.textColor}`}
+              key={`${card.title}-${i}`}
+              className={`w-full shrink-0 snap-center rounded-[2rem] p-7 shadow-[0_20px_60px_rgba(17,18,18,0.08)] ${card.background} ${card.textColor}`}
             >
-              <div className="mx-auto mb-5 h-[9.5rem] w-[9.5rem] overflow-hidden rounded-[1.4rem]">
+              <div className="mx-auto mb-5 h-[14rem] w-full max-w-[22rem] overflow-hidden rounded-[1.4rem]">
                 <img src={card.image} alt={card.title} className="h-full w-full object-cover" />
               </div>
               <h3 className="text-center text-[2.4rem] font-medium leading-none tracking-tight">{card.title}</h3>
-              <p className="mt-4 text-center text-base leading-relaxed">{card.body}</p>
-              {card.extra ? <p className="mt-5 text-center text-base leading-relaxed">{card.extra}</p> : null}
+              <p className="mt-4 text-center text-[1.1rem] leading-relaxed">{card.body}</p>
+              {card.extra ? <p className="mt-5 text-center text-[1.1rem] leading-relaxed">{card.extra}</p> : null}
             </article>
           ))}
+        </div>
+
+        {/* Mobile Progress Bar */}
+        <div className="mt-6 h-[3px] w-full bg-grey-200 overflow-hidden rounded-full">
+          <div
+            className="h-full bg-grey-900 transition-all duration-300 rounded-full"
+            style={{ width: `${((activeCardIndex + 1) / 3) * 100}%` }}
+          />
         </div>
       </div>
 
       <div className="relative hidden h-[280vh] lg:block">
-        <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
-          {cards.map((card, index) => (
-            <article
-              key={card.title}
-              ref={(element) => {
-                desktopCardsRef.current[index] = element;
-              }}
-              className={`absolute flex w-full max-w-[640px] flex-col items-center rounded-[2.6rem] p-10 shadow-[0_40px_120px_rgba(17,18,18,0.1)] xl:max-w-[760px] ${card.background} ${card.textColor}`}
-              style={{
-                transform: `rotate(${index === 0 ? 7 : index === 1 ? 12 : 17}deg)`,
-                zIndex: cards.length - index,
-              }}
-            >
-              <div className="mb-6 h-44 w-44 overflow-hidden rounded-[1.6rem] xl:h-48 xl:w-48">
-                <img src={card.image} alt={card.title} className="h-full w-full object-cover" />
-              </div>
-              <h3 className="text-center text-[4rem] font-medium leading-none tracking-tight xl:text-[4.7rem]">
-                {card.title}
-              </h3>
-              <p className="mt-4 max-w-[500px] text-center text-[1.35rem] leading-relaxed xl:max-w-[560px] xl:text-[1.5rem]">
-                {card.body}
-              </p>
-              {card.extra ? (
-                <p className="mt-7 max-w-[500px] text-center text-[1.35rem] leading-relaxed xl:max-w-[560px] xl:text-[1.5rem]">
-                  {card.extra}
+        <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden pt-20">
+
+          {/* Desktop-only Text Title */}
+          <div className="absolute top-[8%] text-center text-2xl font-medium tracking-tight text-grey-900">
+            Legacy In The Making
+          </div>
+
+          <div className="relative flex w-full max-w-[480px] xl:max-w-[540px] items-center justify-center mt-10">
+            {cards.map((card, index) => (
+              <article
+                key={card.title}
+                ref={(element) => {
+                  desktopCardsRef.current[index] = element;
+                }}
+                className={`absolute flex w-full max-w-[480px] flex-col items-center rounded-[2.6rem] p-8 shadow-[0_20px_80px_rgba(17,18,18,0.15)] xl:max-w-[540px] xl:p-10 ${card.background} ${card.textColor}`}
+                style={{
+                  zIndex: cards.length - index,
+                }}
+              >
+                <div className="mb-6 h-40 w-40 overflow-hidden rounded-[1.6rem] xl:h-44 xl:w-44">
+                  <img src={card.image} alt={card.title} className="h-full w-full object-cover" />
+                </div>
+                <h3 className="text-center text-[3.2rem] font-medium leading-none tracking-tight xl:text-[3.8rem]">
+                  {card.title}
+                </h3>
+                <p className="mt-4 max-w-[400px] text-center text-[1rem] leading-relaxed xl:max-w-[460px] xl:text-[1.1rem]">
+                  {card.body}
                 </p>
-              ) : null}
-            </article>
-          ))}
+                {card.extra ? (
+                  <p className="mt-5 max-w-[400px] text-center text-[1rem] leading-relaxed xl:max-w-[460px] xl:text-[1.1rem]">
+                    {card.extra}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

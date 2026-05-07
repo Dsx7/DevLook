@@ -119,12 +119,12 @@ export default function FeaturedWork() {
               <div className="absolute bottom-0 left-0 w-full h-[35vh] z-20 pointer-events-none bg-gradient-to-t from-grey-900 hidden lg:flex"></div>
 
               {/* The List Elements */}
-              <div className="flex flex-col gap-y-2 relative z-10 2xl:gap-y-3 4xl:gap-y-5 pt-[10vh] pb-[40vh]" ref={headingsWrapperRef}>
+              <div className="flex flex-col gap-y-4 relative z-10 pt-[10vh] pb-[40vh]" ref={headingsWrapperRef}>
                 {caseStudies.map((work) => (
-                  <div key={`title-${work.id}`} className="relative transition">
+                  <div key={`title-${work.id}`} className="relative transition w-full">
                     <Link 
                       href="#"
-                      className={`flex items-start gap-x-2 transition-transform duration-300 ease-out w-max ${activeHover === work.id ? 'translate-x-4' : 'translate-x-0'}`}
+                      className={`flex flex-col xl:flex-row xl:items-start gap-x-3 transition-transform duration-300 ease-out w-full pr-10 ${activeHover === work.id ? 'translate-x-4' : 'translate-x-0'}`}
                       // FIX: Only trigger active state, DO NOT trigger the custom cursor on text hover
                       onMouseEnter={() => setActiveHover(work.id)}
                       onMouseLeave={() => setActiveHover(null)}
@@ -134,7 +134,7 @@ export default function FeaturedWork() {
                         {work.title}
                       </div>
                       {/* Date Text (Natural Flex alignment next to title) */}
-                      <div className={`text-xs font-medium mt-2 transition-colors duration-300 ${activeHover === work.id ? 'text-white' : 'text-white/30'}`}>
+                      <div className={`text-xs font-medium mt-1 xl:mt-2 shrink-0 transition-colors duration-300 ${activeHover === work.id ? 'text-white' : 'text-white/30'}`}>
                         {work.date}
                       </div>
                     </Link>
@@ -157,49 +157,46 @@ export default function FeaturedWork() {
             </div>
 
             {/* The Image Cards */}
-            <div className="flex flex-col gap-y-6 lg:gap-y-8">
+            <div className="flex flex-col gap-y-6 lg:gap-y-8 w-full overflow-hidden">
               {caseStudies.map((work) => (
                 <Link 
                   key={`card-${work.id}`} 
                   href="#" 
-                  // lg:cursor-none hides the default mouse so only our custom mint cursor shows
-                  className="grid group rounded-[1.5rem] overflow-hidden lg:rounded-[2rem] relative lg:cursor-none shadow-xl"
-                  // KEEP custom cursor triggers here for the images
+                  className="grid group rounded-[1.5rem] overflow-hidden lg:rounded-[2rem] relative lg:cursor-none shadow-xl border border-white/10 w-full bg-grey-900"
                   onMouseEnter={() => { setActiveHover(work.id); setIsHoveringImage(true); }}
                   onMouseLeave={() => { setActiveHover(null); setIsHoveringImage(false); }}
                 >
                   
                   {/* Default State: Image */}
-<div className="col-start-1 row-start-1 transition duration-500">
-  <div className="relative w-full bg-grey-800 flex items-center justify-center py-6">
-    <img
-      src={work.img}
-      alt={work.title}
-      className="w-full h-auto object-contain max-h-[500px]"
-    />
-  </div>
-</div>
+                  <div className="col-start-1 row-start-1 h-[400px] lg:h-[550px] xl:h-[650px] w-full overflow-hidden rounded-[1.5rem] lg:rounded-[2rem]">
+                    <img
+                      src={work.img}
+                      alt={work.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                  </div>
 
-                  {/* Top Right Tag (Disappears on hover) */}
-                  <div className={`col-start-1 row-start-1 p-4 z-30 flex justify-end items-start lg:items-end lg:p-5 transition-opacity duration-300 ${activeHover === work.id ? 'opacity-0' : 'opacity-100'}`}>
-                    <div className="shrink-0 inline-flex items-center rounded-full tracking-tight font-medium leading-none text-white bg-white/20 backdrop-blur-sm text-sm gap-x-3 py-2 px-3.5 lg:text-base">
-                      <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  {/* Tag Overlay (Top Right on Mobile, Bottom Right on Desktop) */}
+                  <div className={`col-start-1 row-start-1 p-4 lg:p-8 lg:pb-10 z-30 flex justify-end items-start lg:items-end pointer-events-none transition-opacity duration-300 ${activeHover === work.id ? 'opacity-0' : 'opacity-100'}`}>
+                    <div className="shrink-0 inline-flex items-center rounded-full tracking-tight font-medium leading-none text-white bg-white/20 backdrop-blur-md text-sm gap-x-2 py-2 px-3 lg:py-2.5 lg:px-4 lg:text-[15px]">
+                      <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                       </svg>
                       <div>{work.tag}</div>
-                      <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                      <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17L17 7M17 7H7M17 7V17"></path>
                       </svg>
                     </div>
                   </div>
 
-                  {/* Mobile Title Overlay (Hidden on Desktop) */}
-                  <div className={`col-start-1 row-start-1 p-5 z-30 relative flex justify-start items-end lg:hidden transition-opacity duration-300 ${activeHover === work.id ? 'opacity-0' : 'opacity-100'}`}>
+                  {/* Title Overlay (Bottom Left on Both Mobile & Desktop) */}
+                  <div className={`col-start-1 row-start-1 p-5 lg:p-8 lg:pb-10 z-20 flex justify-start items-end pointer-events-none transition-opacity duration-300 ${activeHover === work.id ? 'opacity-0 lg:opacity-100' : 'opacity-100'}`}>
                     <div className="grid gap-y-1 relative z-20">
-                      <div className="text-white text-sm font-bold mb-1 drop-shadow-md">{work.date}</div>
-                      <div className="text-white text-[2.5rem] leading-[1] font-sans-primary font-medium tracking-tight drop-shadow-md">{work.title}</div>
+                      <div className={`text-white text-xs lg:text-sm font-bold drop-shadow-md transition-opacity duration-300 ${activeHover === work.id ? 'lg:opacity-0' : ''}`}>{work.date}</div>
+                      <div className={`text-white text-[2rem] lg:text-[2.5rem] xl:text-[3rem] leading-[1] font-sans-primary font-medium tracking-tight drop-shadow-md transition-opacity duration-300 ${activeHover === work.id ? 'lg:opacity-0' : ''}`}>{work.title}</div>
                     </div>
-                    <div className="absolute w-full bottom-0 left-0 h-40 bg-gradient-to-t from-black/90 to-transparent z-10"></div>
+                    {/* Gradient to make text readable */}
+                    <div className={`absolute w-full bottom-0 left-0 h-40 lg:h-64 bg-gradient-to-t from-black/80 to-transparent z-10 rounded-b-[1.5rem] lg:rounded-b-[2rem] transition-opacity duration-300 ${activeHover === work.id ? 'lg:opacity-0' : ''}`}></div>
                   </div>
 
                   {/* =========================================
@@ -214,7 +211,7 @@ export default function FeaturedWork() {
                       clipPath: activeHover === work.id ? "circle(150% at 50% 100%)" : "circle(0% at 50% 100%)"
                     }}
                   >
-                    {/* Top Left Title (Size Reduced as requested) */}
+                    {/* Top Left Title */}
                     <div className="inline-flex flex-wrap text-balance relative text-left justify-start text-current text-3xl/none lg:text-4xl/none xl:text-5xl/none font-sans-primary font-medium tracking-tight pr-4">
                       {work.stat}
                     </div>
@@ -240,6 +237,29 @@ export default function FeaturedWork() {
             
           </div>
         </div>
+
+        {/* =========================================
+            EXPLORE OUR WORK BUTTON
+        ========================================= */}
+        <div className="w-full mt-6 lg:mt-12 flex justify-center">
+          <Link 
+            href="#" 
+            className="group w-full lg:w-auto inline-flex items-center justify-center bg-white text-grey-900 font-sans-primary font-semibold text-[15px] px-8 py-4 lg:py-4 rounded-full overflow-hidden transition-all duration-300 lg:hover:scale-[1.03] shadow-sm"
+          >
+            {/* Flip text wrapper */}
+            <div className="relative flex items-center justify-center overflow-hidden">
+              {/* Initial Text */}
+              <span className="flex items-center gap-x-1.5 transition-transform duration-[400ms] ease-[cubic-bezier(0.76,0,0.24,1)] lg:group-hover:-translate-y-[150%]">
+                Explore Our Work <span className="text-[10.5px] mt-0.5 font-bold">↗</span>
+              </span>
+              {/* Hover Text (flips up from below) */}
+              <span className="absolute inset-0 flex items-center justify-center gap-x-1.5 transition-transform duration-[400ms] ease-[cubic-bezier(0.76,0,0.24,1)] translate-y-[150%] lg:group-hover:translate-y-0">
+                Explore Our Work <span className="text-[10.5px] mt-0.5 font-bold">↗</span>
+              </span>
+            </div>
+          </Link>
+        </div>
+
       </div>
     </section>
   );
