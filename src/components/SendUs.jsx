@@ -34,10 +34,13 @@ export default function SendUs() {
     "/Screenshot-2025-06-23-at-23.16.14.webp"
   ];
 
-  // Pick random images only once when component mounts
-  const randomImages = useMemo(() => {
+  // Use state to hold images, initialized with a static array to prevent hydration mismatch
+  const [randomImages, setRandomImages] = useState(ALL_IMAGES.slice(0, 4));
+
+  useEffect(() => {
+    // Shuffle images only on the client side after the initial render
     let shuffled = [...ALL_IMAGES].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 4);
+    setRandomImages(shuffled.slice(0, 4));
   }, []);
 
   useEffect(() => {

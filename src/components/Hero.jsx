@@ -10,10 +10,10 @@ const backgroundImages = [
   "/RedBull-Instagram-Post-45.webp"
 ];
 
-export default function Hero() {
+export default function Hero({ initialImageIndex = 0 }) {
   const headingRef = useRef(null);
   const inlineImageRef = useRef(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
 
   // 1. Text Entry Animation
   useEffect(() => {
@@ -38,11 +38,7 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  // 2. Pick ONE random image on page load and keep it static (No setInterval)
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    setCurrentImageIndex(randomIndex);
-  }, []);
+
 
   return (
     <section className="w-full py-0">

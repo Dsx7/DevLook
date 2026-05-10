@@ -9,13 +9,18 @@ import ReadyText from "@/components/ReadyText";
 import Footer from "@/components/Footer";
 import SendUs from "@/components/SendUs";
 
+export const dynamic = 'force-dynamic'; // Ensures this runs per-request on the server
+
 export default function Home() {
+  // Select a random image index on the server for each unique page load
+  const randomIndex = Math.floor(Math.random() * 4); // 4 background images available
+
   return (
     <>
       <Navbar />
 
       <main className="flex min-h-screen flex-col">
-        <Hero />
+        <Hero initialImageIndex={randomIndex} />
         <Carousel />
         <FeaturedWork />
         <Services />
