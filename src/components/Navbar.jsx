@@ -141,18 +141,12 @@ export default function Navbar() {
       }
 
       // 3. Hide/Show logic
-      const isScrollingUp = currentScrollY < lastScrollY.current;
-      
       if (forceHide) {
-        if (isScrollingUp) {
-          setHidden(false);
-        } else {
-          setHidden(true);
-          setActiveMenu(null);
-        }
+        setHidden(true);
+        setActiveMenu(null);
       } else {
         // Standard hide/show on scroll up/down
-        if (!isScrollingUp && currentScrollY > 150) {
+        if (currentScrollY > lastScrollY.current && currentScrollY > 150) {
           setHidden(true);
           setActiveMenu(null);
         } else {
@@ -225,7 +219,7 @@ export default function Navbar() {
       {/* BACKGROUND DIMMER FOR MEGA MENU */}
       <div
         className={`fixed inset-0 w-screen h-screen z-30 transition-all duration-300 pointer-events-none
-          ${activeMenu ? 'opacity-100 backdrop-blur-md bg-grey-900/20' : 'opacity-0 backdrop-blur-none'}`}
+          ${activeMenu ? 'opacity-100 backdrop-blur-md bg-grey-100/30' : 'opacity-0 backdrop-blur-none'}`}
       />
 
       {/* Sticky Zero-Height Wrapper for native scrolling without taking up space */}
@@ -405,8 +399,8 @@ export default function Navbar() {
               {navItems.map((item) => (
                 <div key={item.name} className="flex flex-col w-full">
 
-                  <div className="flex items-center justify-between w-full py-1.5">
-                    <Link href="#" className="text-white text-[26px] sm:text-[28px] tracking-tight font-medium leading-none">
+                  <div className="flex items-center justify-between w-full py-1">
+                    <Link href="#" className="text-white text-[36px] sm:text-[36px] tracking-tight font-medium leading-none">
                       {item.name}
                     </Link>
 
@@ -416,10 +410,10 @@ export default function Navbar() {
                           e.preventDefault();
                           toggleMobileDropdown(item.name);
                         }}
-                        className="w-10 h-10 rounded-full border border-white/50 flex items-center justify-center text-white transition-transform duration-300 z-50 cursor-pointer"
+                        className="w-[30px] h-[30px] rounded-full border border-white/50 flex items-center justify-center text-white transition-transform duration-300 z-50 cursor-pointer"
                         style={{ transform: activeMobileDropdown === item.name ? 'rotate(180deg)' : 'rotate(0deg)' }}
                       >
-                        <svg className="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="w-3 h-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 9l-7 7-7-7"></path>
                         </svg>
                       </button>
@@ -432,7 +426,7 @@ export default function Navbar() {
                     <div className="overflow-hidden flex flex-col gap-y-3 pl-1">
                       {item.hasMenu && megaMenus[item.name] && megaMenus[item.name].columns.map(col =>
                         col.links.map(link => (
-                          <Link key={link.label} href="#" className="text-white/70 hover:text-white transition-colors text-[17px] font-medium tracking-tight">
+                          <Link key={link.label} href="#" className="text-white hover:text-white transition-colors text-[20px] font-medium tracking-tight">
                             {link.label}
                           </Link>
                         ))

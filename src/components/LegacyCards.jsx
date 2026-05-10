@@ -68,30 +68,30 @@ export default function LegacyCards() {
           gsap.set(desktopCardsRef.current[2], { rotate: 10, xPercent: 0, yPercent: 0 });
 
           // PEELING FORMATION REARRANGEMENT:
-          // The cards simultaneously rearrange to create the peeking layered effect
-          // by animating simultaneously with different x/y and larger rotations.
+          // The cards animate vertically to create a staggered peeking layered effect
+          // at the top of the viewport.
 
-          // Card 0 (Black/Pioneers): moves top-left, rotated significantly
+          // Card 0 (Black/Pioneers): moves UP almost off-screen, sharp rotation
           tl.to(desktopCardsRef.current[0], {
-            xPercent: -40,
-            yPercent: -30,
-            rotate: -25,
+            xPercent: 0,
+            yPercent: -115,
+            rotate: -20,
             ease: "power2.inOut",
           }, 0);
 
-          // Card 1 (Mint/Award Winning): moves slightly middle, minor rotation
+          // Card 1 (Mint/Award Winning): moves UP partially off-screen, slight rotation
           tl.to(desktopCardsRef.current[1], {
             xPercent: 0,
-            yPercent: -10,
-            rotate: 15,
+            yPercent: -75,
+            rotate: -10,
             ease: "power2.inOut",
           }, 0);
 
-          // Card 2 (White/Speed): moves bottom-right, rotated significantly
+          // Card 2 (White/Speed): stays pinned in the center to anchor the layout
           tl.to(desktopCardsRef.current[2], {
-            xPercent: 40,
-            yPercent: 30,
-            rotate: 35,
+            xPercent: 0,
+            yPercent: 0,
+            rotate: 10,
             ease: "power2.inOut",
           }, 0);
         },
