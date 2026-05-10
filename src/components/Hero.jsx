@@ -12,15 +12,30 @@ const backgroundImages = [
 
 export default function Hero() {
   const headingRef = useRef(null);
+  const inlineImageRef = useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // 1. Text Entry Animation
   useEffect(() => {
-    gsap.fromTo(
-      headingRef.current,
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.2 }
-    );
+    const ctx = gsap.context(() => {
+      // Main Text entrance
+      gsap.fromTo(
+        headingRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.1 }
+      );
+
+      // Desktop Inline Image open
+      gsap.matchMedia().add("(min-width: 1024px)", () => {
+        gsap.fromTo(
+          inlineImageRef.current,
+          { width: "0em", margin: "0px" },
+          { width: "0.8em", margin: "0 0.75rem", duration: 1.2, ease: "expo.out", delay: 0.4 }
+        );
+      });
+    });
+
+    return () => ctx.revert();
   }, []);
 
   // 2. Pick ONE random image on page load and keep it static (No setInterval)
@@ -113,6 +128,7 @@ export default function Hero() {
 
                       {/* 5. Rounded Square Inline Image */}
                       <div
+                        ref={inlineImageRef}
                         className="inline-block relative overflow-hidden bg-black/20 mx-1 md:mx-3 shadow-2xl rounded-xl self-center"
                         style={{ width: "0.8em", height: "0.8em" }}
                       >

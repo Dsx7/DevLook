@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 const stories = [
   {
@@ -67,6 +68,52 @@ export default function NewsGrid() {
     }
   }, []);
 
+  const headingRef = useRef(null);
+  const word1Ref = useRef(null);
+  const imageWrapperRef = useRef(null);
+  const imageRef = useRef(null);
+  const word2Ref = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      ScrollTrigger.matchMedia({
+        "(min-width: 1024px)": () => {
+          gsap.fromTo(
+            [word1Ref.current, imageWrapperRef.current, word2Ref.current],
+            { yPercent: 120 },
+            {
+              yPercent: 0,
+              duration: 1.2,
+              ease: "expo.out",
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: headingRef.current,
+                start: "top 80%",
+              },
+            }
+          );
+          
+          gsap.fromTo(
+            imageRef.current,
+            { scale: 1.5 },
+            {
+              scale: 1,
+              duration: 1.2,
+              ease: "expo.out",
+              delay: 0.1,
+              scrollTrigger: {
+                trigger: headingRef.current,
+                start: "top 80%",
+              },
+            }
+          );
+        },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+
   const handleMobileScroll = (e) => {
     const container = e.target;
     const scrollLeft = container.scrollLeft;
@@ -98,17 +145,24 @@ export default function NewsGrid() {
       <div className="mx-auto max-w-[1600px]">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <h2 
-            className="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-x-3 gap-y-1 text-[4rem] font-medium leading-[0.9] tracking-tight text-grey-900 sm:text-[5rem] lg:text-[6.5rem] lg:cursor-auto relative z-10"
+            ref={headingRef}
+            className="flex flex-col lg:flex-row lg:flex-wrap lg:items-center gap-x-2 sm:gap-x-3 gap-y-0 sm:gap-y-1 text-[2.8rem] font-medium leading-[0.9] tracking-tight text-grey-900 sm:text-[4rem] lg:text-[6.5rem] lg:cursor-auto relative z-10"
             onMouseEnter={() => setIsHoveringSection(false)}
             onMouseLeave={() => setIsHoveringSection(true)}
           >
             <div className="flex items-center gap-x-3">
-              <span>What's</span>
-              <span className="relative inline-block h-[0.6em] w-[0.6em] overflow-hidden rounded-[0.18em] bg-black/10">
-                <img src="/maxresdefault_2025-10-22-141838_nmnu.webp" alt="" className="absolute inset-0 h-full w-full object-cover" />
-              </span>
+              <div className="overflow-hidden leading-tight pb-2 -mb-2">
+                <span ref={word1Ref} className="inline-block">What's</span>
+              </div>
+              <div className="overflow-hidden leading-tight pb-2 -mb-2">
+                <span ref={imageWrapperRef} className="relative inline-block h-[0.9em] w-[0.9em] lg:h-[0.6em] lg:w-[0.6em] overflow-hidden rounded-[0.18em] bg-black/10">
+                  <img ref={imageRef} src="/maxresdefault_2025-10-22-141838_nmnu.webp" alt="" className="absolute inset-0 h-full w-full object-cover lg:scale-150" />
+                </span>
+              </div>
             </div>
-            <span>New</span>
+            <div className="overflow-hidden leading-tight pb-2 -mb-2">
+              <span ref={word2Ref} className="inline-block">New</span>
+            </div>
           </h2>
 
           <Link

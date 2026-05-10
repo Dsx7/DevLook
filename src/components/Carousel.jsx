@@ -132,7 +132,10 @@ export default function Carousel() {
                 href="#" 
                 className="group inline-flex justify-center gap-x-2 items-center relative leading-tight tracking-tightish capitalize font-sans-primary font-medium overflow-hidden cursor-pointer text-base px-6 py-3 rounded-3xl transition-all duration-300 hover:rounded-xl bg-white text-grey-900 shadow-sm"
               >
-                <span>Our Story</span>
+                <div className="relative overflow-hidden flex items-center h-[20px]">
+                  <span className="block transition-transform duration-300 ease-out group-hover:-translate-y-full">Our Story</span>
+                  <span className="absolute top-0 left-0 text-center transition-transform duration-300 ease-out translate-y-full group-hover:translate-y-0">Our Story</span>
+                </div>
                 <span className="text-xs transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 mt-0.5">↗</span>
               </Link>
               
@@ -140,7 +143,10 @@ export default function Carousel() {
                 href="#" 
                 className="group inline-flex justify-center gap-x-2 items-center relative leading-tight tracking-tightish capitalize font-sans-primary font-medium overflow-hidden cursor-pointer text-base px-6 py-3 rounded-3xl transition-all duration-300 hover:bg-black/5 text-grey-900"
               >
-                <span>Our Services</span>
+                <div className="relative overflow-hidden flex items-center h-[20px]">
+                  <span className="block transition-transform duration-300 ease-out group-hover:-translate-y-full">Our Services</span>
+                  <span className="absolute top-0 left-0 text-center transition-transform duration-300 ease-out translate-y-full group-hover:translate-y-0">Our Services</span>
+                </div>
                 <span className="text-xs transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 mt-0.5">↗</span>
               </Link>
             </div>

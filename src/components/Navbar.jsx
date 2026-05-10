@@ -277,9 +277,12 @@ export default function Navbar() {
               <div className="hidden lg:flex w-[180px] shrink-0 justify-end items-center z-50 relative">
                 <Link
                   href="#"
-                  className={`inline-flex justify-center gap-x-1.5 items-center font-sans-primary font-semibold text-[14px] px-5 py-2.5 rounded-3xl transition duration-300 hover:rounded-xl ${scrolled ? 'bg-grey-900 text-white' : 'bg-white text-grey-900'}`}
+                  className={`group inline-flex justify-center gap-x-1.5 items-center font-sans-primary font-semibold text-[14px] px-5 py-2.5 rounded-[2rem] hover:rounded-xl transition-all duration-300 ${scrolled ? 'bg-grey-900 text-white' : 'bg-white text-grey-900'}`}
                 >
-                  <span>Get in touch</span>
+                  <div className="relative overflow-hidden flex items-center h-[18px]">
+                    <span className="block transition-transform duration-300 ease-out group-hover:-translate-y-full">Get in touch</span>
+                    <span className="absolute top-0 left-0 text-center transition-transform duration-300 ease-out translate-y-full group-hover:translate-y-0">Get in touch</span>
+                  </div>
                   <span className="text-[10px] mt-0.5">↗</span>
                 </Link>
               </div>
