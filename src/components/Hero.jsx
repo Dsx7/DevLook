@@ -111,27 +111,27 @@ export default function Hero({ initialImageIndex = 0 }) {
                     </div>
                   </div>
 
-                  {/* 4. Corrected Text Scale: Max text size brought down from 9rem back to 7.5rem (approx 8xl) */}
-                  <h1 className="inline-flex flex-wrap text-balance relative flex-col text-center justify-center text-white text-6xl/[0.9] md:text-6xl/none lg:text-7xl/[0.9] xl:text-[5.5rem]/[0.9] 2xl:text-[8.5rem]/[0.9] font-sans-primary font-medium tracking-tight">
+                  {/* 4. Corrected Text Scale: Font size reduced slightly across breakpoints */}
+                  <h1 className="inline-flex flex-wrap text-balance relative flex-col text-center justify-center text-white text-5xl/[0.9] md:text-6xl/[0.9] lg:text-[4.5rem]/[0.9] xl:text-[5rem]/[0.9] 2xl:text-[7.5rem]/[0.9] font-sans-primary font-medium tracking-tight">
                     <div className="flex flex-wrap relative text-center justify-center">
                       <div className="inline mr-2 md:mr-4">We</div>
                       <div className="inline">Create</div>
                     </div>
 
                     {/* The line with the inline image */}
-                    <div className="flex flex-wrap items-baseline relative text-center justify-center mt-[-2%]">
+                    <div className="flex flex-wrap items-center relative text-center justify-center mt-1 md:mt-2">
                       <div className="inline mr-2 md:mr-3">Category</div>
 
                       {/* 5. Rounded Square Inline Image */}
                       <div
                         ref={inlineImageRef}
-                        className="inline-block relative overflow-hidden bg-black/20 mx-1 md:mx-3 shadow-2xl rounded-xl self-center"
+                        className="inline-block relative overflow-hidden bg-black/20 mx-1 md:mx-3 shadow-2xl rounded-xl translate-y-[8%]"
                         style={{ width: "0.8em", height: "0.8em" }}
                       >
                         <img
                           src={backgroundImages[currentImageIndex]}
                           alt="Inline Match"
-                          className="w-full h-full object-cover absolute inset-0 object-[center_25%]"
+                          className="w-full h-full object-cover absolute inset-0 object-[center_25%] scale-125"
                         />
                       </div>
 

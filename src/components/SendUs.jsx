@@ -2,6 +2,11 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 function ArrowIcon({ className = "" }) {
   return (
@@ -47,13 +52,36 @@ export default function SendUs() {
     if (typeof window === "undefined") return;
 
     let ctx = gsap.context(() => {
-      // 1. GSAP Marquee (Infinite scroll)
+      // 1. GSAP Marquee (Infinite scroll + Scroll Direction)
       if (marqueeWrapperRef.current && marqueeContentRef.current) {
-        gsap.to(marqueeContentRef.current, {
+        const marqueeTween = gsap.to(marqueeContentRef.current, {
           xPercent: -50,
           repeat: -1,
           duration: 35, // Adjust this to change scrolling speed
           ease: "none"
+        });
+
+        // Change direction and speed based on scroll
+        ScrollTrigger.create({
+          start: 0,
+          end: "max",
+          onUpdate: (self) => {
+            // self.direction: 1 = scrolling down, -1 = scrolling up
+            const direction = self.direction || 1;
+            
+            // Apply velocity for a dynamic speed boost
+            const velocity = Math.min(Math.abs(self.getVelocity() / 300), 5);
+            
+            gsap.to(marqueeTween, {
+              timeScale: direction * (1 + velocity),
+              duration: 0.2,
+              overwrite: true,
+              onComplete: () => {
+                // Return to normal speed but keep current direction
+                gsap.to(marqueeTween, { timeScale: direction, duration: 1, overwrite: true });
+              }
+            });
+          }
         });
       }
 
