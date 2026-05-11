@@ -18,9 +18,9 @@ export default function ReadyText() {
 
       gsap.fromTo(
         textRef.current,
-        { xPercent: 28, y: 90 },
+        { xPercent: 30, y: 90 },
         {
-          xPercent: -48,
+          xPercent: -100,
           y: 220,
           ease: "none",
           scrollTrigger: {
