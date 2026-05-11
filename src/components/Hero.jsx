@@ -112,7 +112,7 @@ export default function Hero({ initialImageIndex = 0 }) {
                   </div>
 
                   {/* 4. Corrected Text Scale: Font size reduced slightly across breakpoints */}
-                  <h1 className="inline-flex flex-wrap text-balance relative flex-col text-center justify-center text-white text-5xl/[0.9] md:text-6xl/[0.9] lg:text-[4.5rem]/[0.9] xl:text-[5rem]/[0.9] 2xl:text-[7.5rem]/[0.9] font-sans-primary font-medium tracking-tight">
+                  <h1 className="inline-flex flex-wrap text-balance relative flex-col text-center justify-center text-white text-6xl/[0.9] md:text-6xl/[0.9] lg:text-[4.5rem]/[0.9] xl:text-[5rem]/[0.9] 2xl:text-[7.5rem]/[0.9] font-sans-primary font-medium tracking-tight">
                     <div className="flex flex-wrap relative text-center justify-center">
                       <div className="inline mr-2 md:mr-4">We</div>
                       <div className="inline">Create</div>
